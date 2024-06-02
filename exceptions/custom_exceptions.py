@@ -1,0 +1,2 @@
+class ImageValidationException(Exception):
+    pass
