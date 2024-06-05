@@ -75,7 +75,7 @@ async def remove_bg(image: UploadFile = File(...)):
         except ImageValidationException as e:
             raise HTTPException(status_code=400, detail=str(e))
 
-        image.remove_bg()
+        file_location = image.remove_bg()
 
         if not os.path.exists(file_location):
             raise HTTPException(

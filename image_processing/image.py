@@ -10,6 +10,10 @@ class BaseImage:
         self.filename = filename
         self.data = data
 
+    def get_extension(self) -> str:
+        base, extension = os.path.splitext(self.filename)
+        return extension
+
     def validate(self) -> Tuple[bool, str]:
         try:
             Image.open(self.data)
