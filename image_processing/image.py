@@ -23,3 +23,13 @@ class BaseImage:
         if not image_valid:
             os.remove(self.filename)
             raise ImageValidationException(validation_problem)
+
+    def delete_one_image(self) -> None:
+        files = os.listdir("uploads/")
+        if len(files) < 2:
+            return None
+
+        try:
+            os.remove(os.path.join("uploads", files[0]))
+        except:
+            pass

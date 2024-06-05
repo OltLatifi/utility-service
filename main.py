@@ -3,6 +3,8 @@ from fastapi.responses import FileResponse
 
 from exceptions.custom_exceptions import ImageValidationException
 from image_processing.manipulation import ImageManipulation
+from image_processing.smart_crop import SmartCrop
+
 
 import os
 
@@ -46,11 +48,11 @@ async def smart_crop(image: UploadFile = File(...), width: int = 200, height: in
         f.write(await image.read())
 
         try:
-            image = ImageManipulation(file_location)
+            image = SmartCrop(file_location)
         except ImageValidationException as e:
             raise HTTPException(status_code=400, detail=str(e))
 
-        image.smart_crop(width, height, compression)
+        image.save(width, height)
 
         if not os.path.exists(file_location):
             raise HTTPException(
