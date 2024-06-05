@@ -5,7 +5,7 @@ from exceptions.custom_exceptions import ImageValidationException
 from image_processing.manipulation import ImageManipulation
 from image_processing.smart_crop import SmartCrop
 
-
+from io import BytesIO
 import os
 
 
@@ -22,10 +22,10 @@ async def upload_file(image: UploadFile = File(...)):
 
     file_location = os.path.join(upload_directory, image.filename)
     with open(file_location, "wb") as f:
-        f.write(await image.read())
+        data = BytesIO(await image.read())
 
         try:
-            image = ImageManipulation(file_location)
+            image = ImageManipulation(file_location, data)
         except ImageValidationException as e:
             raise HTTPException(status_code=400, detail=str(e))
 
@@ -68,10 +68,10 @@ async def remove_bg(image: UploadFile = File(...)):
 
     file_location = os.path.join(upload_directory, image.filename)
     with open(file_location, "wb") as f:
-        f.write(await image.read())
+        data = BytesIO(await image.read())
 
         try:
-            image = ImageManipulation(file_location)
+            image = ImageManipulation(file_location, data)
         except ImageValidationException as e:
             raise HTTPException(status_code=400, detail=str(e))
 

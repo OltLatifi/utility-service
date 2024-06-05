@@ -1,16 +1,18 @@
 import os
+from io import BytesIO
 from PIL import Image
 from typing import Tuple
 from exceptions.custom_exceptions import ImageValidationException
 
 
 class BaseImage:
-    def __init__(self, filename: str) -> None:
+    def __init__(self, filename: str, data: BytesIO) -> None:
         self.filename = filename
+        self.data = data
 
     def validate(self) -> Tuple[bool, str]:
         try:
-            Image.open(self.filename)
+            Image.open(self.data)
         except AttributeError:
             return (False, "IMAGE-FIELD-EMPTY")
         except:
@@ -21,7 +23,6 @@ class BaseImage:
         image_valid, validation_problem = self.validate()
 
         if not image_valid:
-            os.remove(self.filename)
             raise ImageValidationException(validation_problem)
 
     def delete_one_image(self) -> None:
