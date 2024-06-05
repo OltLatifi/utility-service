@@ -1,3 +1,4 @@
+from rembg import remove
 import cv2
 import numpy as np
 from PIL import Image
@@ -15,3 +16,8 @@ class ImageManipulation(BaseImage):
             image = image.resize(
                 (image.width, image.height), Image.NEAREST)
             image.save(self.filename)
+
+    def remove_bg(self):
+        with Image.open(self.filename) as image:
+            imageWithoutBg = remove(image)
+            imageWithoutBg.save(self.filename)

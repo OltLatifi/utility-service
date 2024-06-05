@@ -1,5 +1,4 @@
 from Katna.image import Image
-from Katna.writer import ImageCropDiskWriter
 from image_processing.manipulation import ImageManipulation
 from typing import Tuple
 

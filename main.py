@@ -39,7 +39,7 @@ async def upload_file(image: UploadFile = File(...)):
 
 
 @app.post("/smart-crop/")
-async def smart_crop(image: UploadFile = File(...), width: int = 200, height: int = 200, compression: bool = False):
+async def smart_crop(image: UploadFile = File(...), width: int = 200, height: int = 200):
     if image.size == 0:
         raise HTTPException(status_code=400, detail="IMAGE-FIELD-EMPTY")
 
@@ -53,6 +53,29 @@ async def smart_crop(image: UploadFile = File(...), width: int = 200, height: in
             raise HTTPException(status_code=400, detail=str(e))
 
         image.save(width, height)
+
+        if not os.path.exists(file_location):
+            raise HTTPException(
+                status_code=400, detail="Compressed file not found")
+
+        return FileResponse(file_location)
+
+
+@app.post("/remove-bg/")
+async def remove_bg(image: UploadFile = File(...)):
+    if image.size == 0:
+        raise HTTPException(status_code=400, detail="IMAGE-FIELD-EMPTY")
+
+    file_location = os.path.join(upload_directory, image.filename)
+    with open(file_location, "wb") as f:
+        f.write(await image.read())
+
+        try:
+            image = ImageManipulation(file_location)
+        except ImageValidationException as e:
+            raise HTTPException(status_code=400, detail=str(e))
+
+        image.remove_bg()
 
         if not os.path.exists(file_location):
             raise HTTPException(

@@ -26,6 +26,8 @@ class BaseImage:
 
     def delete_one_image(self) -> None:
         files = os.listdir("uploads/")
+        files = [f for f in files if f != os.path.basename(self.filename)]
+
         if len(files) < 2:
             return None
 
