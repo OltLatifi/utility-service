@@ -13,7 +13,7 @@ class ImageManipulation(BaseImage):
         self.handle_errors()
         self.delete_one_image()
 
-    def compress(self, quality: int = 80, webp: bool = True):
+    def compress(self, quality: int = 80):
         if quality < 10 or quality > 100:
             raise QualityValueExceeded(
                 "Quality should be a value between 10 and 100")

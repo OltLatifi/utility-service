@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: "db"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+    ports:
+      - "5432:5432"
+    volumes:
+      - processor_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: processor_fapi
+    command: fastapi run main.py
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+volumes:
+  processor_data:

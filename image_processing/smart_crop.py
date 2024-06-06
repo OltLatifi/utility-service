@@ -17,7 +17,7 @@ class SmartCrop(ImageManipulation):
             file_path=self.filename,
             target_width=width,
             target_height=height,
-            down_sample_factor=4
+            down_sample_factor=2
         )
 
         file_name, file_ext = self.process_directory()
