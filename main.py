@@ -1,7 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import FileResponse
 
-from exceptions.custom_exceptions import ImageValidationException
+from exceptions.custom_exceptions import ImageValidationException, QualityValueExceeded
 from image_processing.manipulation import ImageManipulation
 from image_processing.smart_crop import SmartCrop
 
@@ -16,7 +16,7 @@ os.makedirs(upload_directory, exist_ok=True)
 
 
 @app.post("/compress/")
-async def upload_file(image: UploadFile = File(...)):
+async def upload_file(quality: int, image: UploadFile = File(...)):
     if image.size == 0:
         raise HTTPException(status_code=400, detail="IMAGE-FIELD-EMPTY")
 
@@ -26,10 +26,9 @@ async def upload_file(image: UploadFile = File(...)):
 
         try:
             image = ImageManipulation(file_location, data)
-        except ImageValidationException as e:
+            image.compress(quality)
+        except (ImageValidationException, QualityValueExceeded) as e:
             raise HTTPException(status_code=400, detail=str(e))
-
-        image.compress()
 
         if not os.path.exists(file_location):
             raise HTTPException(
