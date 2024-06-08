@@ -47,7 +47,7 @@ async def smart_crop(image: UploadFile = File(...), width: int = 200, height: in
         f.write(await image.read())
 
         try:
-            image = SmartCrop(file_location)
+            image = SmartCrop(file_location, None)
         except ImageValidationException as e:
             raise HTTPException(status_code=400, detail=str(e))
 

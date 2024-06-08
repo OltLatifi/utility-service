@@ -16,7 +16,10 @@ class BaseImage:
 
     def validate(self) -> Tuple[bool, str]:
         try:
-            Image.open(self.data)
+            if self.data:
+                Image.open(self.data)
+            else:
+                Image.open(self.filename)
         except AttributeError:
             return (False, "IMAGE-FIELD-EMPTY")
         except:

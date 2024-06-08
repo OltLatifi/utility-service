@@ -1,8 +1,9 @@
 FROM python:3.12
+ENV PYTHONUNBUFFERED=1
 WORKDIR /
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+RUN apt-get update && apt-get install ffmpeg -y
 
 COPY . .
-CMD ["fastapi", "run", "main.py"]
+CMD ["fastapi", "dev", "main.py"]
