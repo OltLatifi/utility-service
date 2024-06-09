@@ -1,11 +1,15 @@
 version: '3.8'
 
+# docker volume create --name=processor_data
+
 services:
   db:
     image: postgres:13
     container_name: postgres_db
     environment:
-      POSTGRES_DB: "db"
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
       POSTGRES_HOST_AUTH_METHOD: "trust"
     ports:
       - "5432:5432"
@@ -14,11 +18,14 @@ services:
 
   app:
     build: .
-    container_name: processor_fapi
+    container_name: processor
     command: fastapi run main.py
+    volumes:
+      - .:/compressor-fapi
     ports:
       - "8000:8000"
     depends_on:
       - db
 volumes:
   processor_data:
+    external: true

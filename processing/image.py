@@ -1,8 +1,8 @@
 import os
 from io import BytesIO
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from typing import Tuple
-from exceptions.custom_exceptions import ImageValidationException
+from imagecompressor.exceptions import ImageValidationException
 
 
 class BaseImage:
@@ -22,7 +22,9 @@ class BaseImage:
                 Image.open(self.filename)
         except AttributeError:
             return (False, "IMAGE-FIELD-EMPTY")
-        except:
+        except UnidentifiedImageError:
+            return (False, "IMAGE-NOT-FOUND")
+        except Exception as e:
             return (False, "FILE-NOT-IMAGE")
         return (True, "")
 

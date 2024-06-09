@@ -1,5 +1,5 @@
 from Katna.image import Image
-from image_processing.manipulation import ImageManipulation
+from .manipulation import ImageManipulation
 from typing import Tuple
 
 

@@ -1,4 +1,4 @@
-from exceptions.custom_exceptions import QualityValueExceeded
+from imagecompressor.exceptions import QualityValueExceeded
 from rembg import remove
 from PIL import Image
 from io import BytesIO
