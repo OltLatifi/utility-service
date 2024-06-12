@@ -20,6 +20,7 @@ STATIC_URL = "static/"
 # Application definition
 
 INSTALLED_APPS = [
+    'authentication',
     'image_processing',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,6 +41,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'imagecompressor.urls'
+AUTH_USER_MODEL = "authentication.User"
 
 TEMPLATES = [
     {
