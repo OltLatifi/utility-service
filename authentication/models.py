@@ -35,3 +35,12 @@ class Token(BaseModel):
 
     def __str__(self) -> str:
         return f"{self.user.email}'s token"
+
+
+class Request(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    token = models.ForeignKey(Token, on_delete=models.CASCADE)
+    endpoint = models.CharField(max_length=255, editable=False)
+
+    def __str__(self) -> str:
+        return f"{self.endpoint} - {self.user}"

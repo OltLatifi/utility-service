@@ -4,3 +4,7 @@ class ImageValidationException(Exception):
 
 class QualityValueExceeded(Exception):
     pass
+
+
+class ThrottleError(Exception):
+    pass

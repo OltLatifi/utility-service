@@ -17,7 +17,7 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('email', 'password1', 'password2')
+        fields = ('email', 'username', 'password1', 'password2')
 
     def save(self) -> Tuple[User, Token]:
         instance: User = super().save(commit=True)
