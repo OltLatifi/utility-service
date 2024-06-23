@@ -22,22 +22,21 @@ def on_throttle(request, exc):
 
 
 @api.post("/compress/", auth=AuthBearer(), tags=['Image'])
-def upload(request, body: CompressionIn, image: UploadedFile = File(...)):
+def compress(request, body: CompressionIn, image: UploadedFile = File(...)):
     if image.size == 0:
         raise HttpError(status_code=400, message="IMAGE-FIELD-EMPTY")
 
     file_location = os.path.join(upload_directory, image.name)
-    with open(file_location, "wb") as f:
-        data = BytesIO(image.read())
+    data = BytesIO(image.read())
 
-        try:
-            image = ImageManipulation(file_location, data)
-            image.compress(body.quality)
-        except (ImageValidationException, QualityValueExceeded) as e:
-            raise HttpError(status_code=400, message=str(e))
+    try:
+        image = ImageManipulation(file_location, data)
+        image.compress(body.quality)
+    except (ImageValidationException, QualityValueExceeded) as e:
+        raise HttpError(status_code=400, message=str(e))
 
-        image_file = open(file_location, 'rb')
-        return FileResponse(image_file)
+    image_file = open(file_location, 'rb')
+    return FileResponse(image_file)
 
 
 @api.post("/smart-crop/", auth=AuthBearer(), tags=['Image'])
@@ -66,15 +65,14 @@ def remove_bg(request, image: UploadedFile = File(...)):
         raise HttpError(status_code=400, detail="IMAGE-FIELD-EMPTY")
 
     file_location = os.path.join(upload_directory, image.name)
-    with open(file_location, "wb") as f:
-        data = BytesIO(image.read())
+    data = BytesIO(image.read())
 
-        try:
-            image = ImageManipulation(file_location, data)
-        except ImageValidationException as e:
-            raise HttpError(status_code=400, message=str(e))
+    try:
+        image = ImageManipulation(file_location, data)
+    except ImageValidationException as e:
+        raise HttpError(status_code=400, message=str(e))
 
-        file_location = image.remove_bg()
-        image_file = open(file_location, 'rb')
+    file_location = image.remove_bg()
+    image_file = open(file_location, 'rb')
 
-        return FileResponse(image_file)
+    return FileResponse(image_file)
