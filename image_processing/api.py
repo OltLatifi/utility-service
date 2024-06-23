@@ -1,5 +1,6 @@
 import os
 from io import BytesIO
+from image_processing.schemas import CompressionIn, SmartCropIn
 from processing.smart_crop import SmartCrop
 from processing.manipulation import ImageManipulation
 from ninja import NinjaAPI, File
@@ -21,7 +22,7 @@ def on_throttle(request, exc):
 
 
 @api.post("/compress/", auth=AuthBearer(), tags=['Image'])
-def upload(request, quality: int = 20, image: UploadedFile = File(...)):
+def upload(request, body: CompressionIn, image: UploadedFile = File(...)):
     if image.size == 0:
         raise HttpError(status_code=400, message="IMAGE-FIELD-EMPTY")
 
@@ -31,7 +32,7 @@ def upload(request, quality: int = 20, image: UploadedFile = File(...)):
 
         try:
             image = ImageManipulation(file_location, data)
-            image.compress(quality)
+            image.compress(body.quality)
         except (ImageValidationException, QualityValueExceeded) as e:
             raise HttpError(status_code=400, message=str(e))
 
@@ -40,7 +41,7 @@ def upload(request, quality: int = 20, image: UploadedFile = File(...)):
 
 
 @api.post("/smart-crop/", auth=AuthBearer(), tags=['Image'])
-def smart_crop(request, width: int = 400, height: int = 400, image: UploadedFile = File(...)):
+def smart_crop(request, body: SmartCropIn, image: UploadedFile = File(...)):
     if image.size == 0:
         raise HttpError(status_code=400, message="IMAGE-FIELD-EMPTY")
 
@@ -53,7 +54,7 @@ def smart_crop(request, width: int = 400, height: int = 400, image: UploadedFile
         except ImageValidationException as e:
             raise HttpError(status_code=400, message=str(e))
 
-        image.save(width, height)
+        image.save(body.width, body.height)
 
         image_file = open(file_location, 'rb')
         return FileResponse(image_file)

@@ -1,8 +1,9 @@
 # forms.py
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from .models import User, Token
+from .models import User, Token, UsagePermission
 from typing import Tuple
+from django.db import transaction
 
 
 class CustomAuthenticationForm(AuthenticationForm):
@@ -20,6 +21,12 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ('email', 'username', 'password1', 'password2')
 
     def save(self) -> Tuple[User, Token]:
-        instance: User = super().save(commit=True)
-        token = Token.objects.create(user=instance)
+        with transaction.atomic():
+            instance: User = super().save(commit=True)
+            token = Token.objects.create(user=instance)
+            default_permission: UsagePermission = UsagePermission.objects.get(
+                requests_per_second=1
+            )
+
+            instance.usage_permission.add(default_permission)
         return (instance, token)

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Token, Request
+from .models import User, Token, Request, UsagePermission
 
 
 class TokenAdmin(admin.ModelAdmin):
@@ -12,4 +12,5 @@ class TokenAdmin(admin.ModelAdmin):
 
 admin.site.register(User)
 admin.site.register(Request)
+admin.site.register(UsagePermission)
 admin.site.register(Token, TokenAdmin)

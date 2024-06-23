@@ -11,6 +11,14 @@ class BaseModel(models.Model):
         abstract = True
 
 
+class UsagePermission(BaseModel):
+    name = models.CharField(max_length=255)
+    requests_per_second = models.PositiveIntegerField()
+
+    def __str__(self) -> str:
+        return f"{self.name} - {self.requests_per_second} "
+
+
 class User(AbstractUser):
     groups = models.ManyToManyField(
         'auth.Group',
@@ -23,6 +31,12 @@ class User(AbstractUser):
         related_name='custom_user_set',
         blank=True,
         verbose_name='user permissions'
+    )
+    usage_permission = models.ManyToManyField(
+        UsagePermission,
+        related_name='user',
+        blank=True,
+        verbose_name='Usage permissions'
     )
 
     def __str__(self) -> str:
